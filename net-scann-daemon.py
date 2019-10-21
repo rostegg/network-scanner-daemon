@@ -17,23 +17,6 @@ arp_history = list()
 
 oui_path = '/tmp/oui.csv'
 
-class GnomeNotificationTypes(Enum):
-    CRITICAL="critical"
-    NORMAL="normal"
-    LOW="low"
-
-
-def notify_gnome(type, title, message):
-    userID = subprocess.run(['id', '-u', os.environ['SUDO_USER']],
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            check=True).stdout.decode("utf-8").replace('\n', '')
-    subprocess.run(['sudo', '-u', os.environ['SUDO_USER'], 'DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/{}/bus'.format(userID), 
-                    'notify-send', '-u', type, '-t', '5000', '-i', 'nm-device-wireless', title, message],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    check=True)
-
 def arp_monitor(packet):
     if packet[ARP].op == 2:
         if arp_table.get(packet[ARP].psrc) == None:
